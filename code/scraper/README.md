@@ -4,7 +4,7 @@ Governement of Assam uploads this information on etenders platform, in form of `
 Our goal is to collect this information present under the layers of captcha and present it in
 machine readable, research friendly manner.
 ### Data Source:
-Assam etenders website has various sections through which different information can be gathered. After doing scoping excercise we are scraping data from `Tender Status` section
+[Assam etenders website](https://assamtenders.gov.in/nicgep/app) has various sections through which different information can be gathered. After doing scoping excercise we are scraping data from [`Tender Status`](https://assamtenders.gov.in/nicgep/app?page=WebTenderStatusLists&service=page) section
 ### What does each script do:
 - `WebDriver.py` : Configures selenium webdriver
 - `Utils.py` : Has multiple utility functions which are re-used in different projects
@@ -17,8 +17,8 @@ Assam etenders website has various sections through which different information 
 - `cd assam-tender-data/code/scraper`
 - `pip3 -r install requirements.txt`
 - Before running the script make sure to change following paramenters:
-      - Configure path of chromedriver in `WebDriver.py`
-      - configure range of date in `scraper_assam_recent_tenders_tender_status.py`
+    >  Configure path of chromedriver in `WebDriver.py`
+    >  Configure range of date in `scraper_assam_recent_tenders_tender_status.py`
 - `python3 scraper_assam_recent_tenders_tender_status.py`
 ### Link and metadata of scraped data:
 ```
