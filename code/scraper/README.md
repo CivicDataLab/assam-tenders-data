@@ -15,6 +15,10 @@ machine readable, research friendly manner.
 - `python3 -m venv /path/to/virtual/env`
 - `virtualenv /path/to/virtual/env/source/bin/activate`
 - `cd assam-tender-data/code/scraper`
+- `mkdir scraped_recent_tenders`
+- `cd scraped_recent_tenders`
+- `mkdir concatinated_csvs`
+- `cd ../`
 - `pip3 -r install requirements.txt`
 - Before running the script make sure to change following paramenters:
     >  Configure path of chromedriver in `WebDriver.py`
