@@ -88,6 +88,12 @@ We have also calculated few Key Performance Indicators using OCDS mapped data un
 ## Maintenance: 
 We are updating the data on the portal in every `three` months
 
+## Links for reference:
+* [Publication Policy ](https://docs.google.com/document/d/1O1ScJWqRozlCWNEBDqfwzJ97B6aauCx74CUx76_7DH4/edit?usp=sharing)
+* [Assam Public Procurement Portal ](assam.open-contracting.in/)
+* [Open Contracting Data Standards ](https://standard.open-contracting.org/latest/en/)
+* [Open Contracting Partnership](https://standard.open-contracting.org/latest/en/)
+
 
 
 
