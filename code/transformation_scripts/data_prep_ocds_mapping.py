@@ -70,6 +70,7 @@ def get_transformed_data(path):
     data_to_upload_final['tender/documents/id'] = ""
     data_to_upload_final['buyer/name'] = data_for_upload['department']
     data_to_upload_final['Fiscal Year'] = pd.to_datetime(data_to_upload_final['tender/bidOpening/date']).dt.to_period('Q-APR').dt.qyear.apply(lambda x: str(x-1) + "-" + str(x))
+    
     data_to_upload_final.to_csv("data_to_upload_latest.csv",index=False)
 
 if __name__ == "__main__":
