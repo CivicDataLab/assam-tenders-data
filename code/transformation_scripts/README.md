@@ -1,4 +1,4 @@
-This script is converts scraped raw data into [Open Contracting Data Standards](https://standard.open-contracting.org/latest/en/). 
+This script converts scraped raw data into [Open Contracting Data Standards](https://standard.open-contracting.org/latest/en/). 
 ### How to run the script:
 * `git clone https://github.com/CivicDataLab/assam-tender-data.git`
 * `pip3 install virtualenv`
