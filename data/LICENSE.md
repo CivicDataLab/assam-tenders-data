@@ -1,6 +1,6 @@
 ## ODC Open Database License (ODbL)
 
-### Preamble
+## Preamble
 
 The Open Database License (ODbL) is a license agreement intended to
 allow users to freely share, modify, and use this Database while
