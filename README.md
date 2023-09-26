@@ -1,7 +1,7 @@
 ### About:
-Fiscal ecosystem consist of hierarchial system through which flow of funds takes place. The most granuler level is tendering where government departments open bids for a project to be done like building of ramp for a school. Therefore to analyse and increase the effectiveness and transparency of this system we developed a [platform](assam.open-contracting.in/) (Assam Public Procurement Platform) for Assam (state of India). This platform aims at increasing transparency by storing all tenders at the same place. 
-<br>
-Assam government uploads contract data almost daily on [etenders platform]([url](https://assamtenders.gov.in/nicgep/app)https://assamtenders.gov.in/nicgep/app). The data publised in this platform is scattered and under captchas. Hence is becomes a bottleneck for users to analyse this data. To solve this we have scraped the data and stored it in a form which is much easier to use and understand. To make this happen we developed various scrapers and applied transformations on the mined data.
+The fiscal ecosystem operates as a hierarchical system facilitating the flow of funds. At its most granular level, the process involves tendering, where government departments solicit bids for various projects, such as constructing a ramp for a school. In our efforts to enhance the efficiency and transparency of this system, we have created the [Assam Public Procurement Platform](assam.open-contracting.in/), specifically for the state of Assam in India. This platform is designed to promote transparency by consolidating all tender information in one central location.
+
+The Assam government regularly uploads contract data on the [etenders platform]((https://assamtenders.gov.in/nicgep/app)https://assamtenders.gov.in/nicgep/app), with new data added almost daily. Unfortunately, the data on this platform is fragmented and often protected by captchas, creating significant hurdles for users attempting to analyze it effectively. To address this issue, we have employed web scraping techniques to collect and organize the data in a user-friendly and comprehensible format. This involved developing multiple scrapers and implementing various data transformations to achieve our goal.
 
 ### Directory Structure:
 - [LICENSE](LICENSE)
@@ -27,10 +27,10 @@ Assam government uploads contract data almost daily on [etenders platform]([url]
   - [README.md](data/README.md)
   - RawData
     - [raw_data_fy_2016_2022.zip](data/RawData/raw_data_fy_2016_2022.zip)
-### Steps followed:
-- Data mining: read about how we scraped assam data [here](code/scraper/README.md)
-- Transformation: there are multilevel transformations perform on the data before uploading to the platform, refer to [README.md](data/README.md)
-### Frequecy of data upload:
+
+### Process:
+- [Data mining](code/scraper/README.md)
+- [Data Transformations](data/README.md)
+
+### Data Update Frequecy:
 We update the platform with new data in every 3 months
-### Way Forward:
-We are planning to scale this work to other states of India such as Himachal Pradesh, Odisa etc.
