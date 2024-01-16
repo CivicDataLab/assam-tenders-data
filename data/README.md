@@ -81,17 +81,6 @@ Therefore the importance of implementing OCDS are following
 
 For further information on cleaning and mapping the data please refer to https://github.com/CivicDataLab/assam-tender-data/tree/transformation/code/transformation_scripts
 
-## Data Version:
-- filename: [ocds_mapped_data_fiscal_year_2016_2020_v1](https://github.com/CivicDataLab/assam-tender-data/blob/data-version-description/data/ProcessedData/ocds-mapped-data/ocds_mapped_data_fiscal_year_2016_2020_v1.json)
-- description: This file contains OCDS mapped data from fiscal year `2016-2017` to `2020-2021`, with limited raw fields mapped to OCDS.
-- changes: This is the first version of OCDS mapped data
-- lastUpdatedOn: `2022-09-29`
-
-- filename: [ocds_mapped_data_fiscal_year_2016_2022_v2](https://github.com/CivicDataLab/assam-tender-data/blob/data-version-description/data/ProcessedData/ocds-mapped-data/ocds_mapped_data_fiscal_year_2016_2022_v2.csv)
-- description: This file contains OCDS mapped data from fiscal year `2016-2017` to `2022-2023`.
-- changes: This version has additional data of two fiscal year from `2021-2022` to `2022-2023`. Awards data has also being added here.
-- lastUpdatedOn: `2023-01-09`
-
 ## How are we using the data:
 OCDS mapped data is uploaded on [Assam Public Procurement Platform](https://assam.open-contracting.in/) under [contracts tab](https://assam.open-contracting.in/datasets?fq=&q=&sort=tender_bid_opening_date%3Aasc&size=&from=).
 We have also calculated few Key Performance Indicators using OCDS mapped data under [data-analysis tab](https://assam.open-contracting.in/kpi?fq=&q=), one can filter the visualisatons and also download them.
