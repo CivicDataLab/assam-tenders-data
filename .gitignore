@@ -1,1 +1,12 @@
+# Virtual Environment Files
+ocds_env/
 
+# VS code settings
+.vscode/
+
+# Cache Python
+code/scraper/__pycache__
+
+# Recent Tender Files
+code/scraper/scraped_recent_tenders
+scraped_recent_tenders/
