@@ -11,7 +11,7 @@ class WebDriver(object):
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_experimental_option("prefs", {
           # "download.default_directory": r"/Users/shreyaagrawal/Documents/Cdl/assam-tender-scraper/scraped_live_tender_data",
-          "download.default_directory": r"/Users/shreyaagrawal/Documents/Cdl/assam-tender-scraper/scraped_recent_tenders",
+          "download.default_directory": r"/home/bhavabhuthi/Documents/CDL/assam-tenders-data/scraped_recent_tenders",
           "download.prompt_for_download": False,
           "download.directory_upgrade": True,
           "safebrowsing.enabled": True
