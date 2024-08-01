@@ -104,3 +104,7 @@ class SeleniumScrappingUtils(object):
     def select_drop_down(driver,id,value):
          selected_element = Select(driver.find_element("xpath",id))
          selected_element.select_by_value(value)
+
+    def get_dropdown_count(driver, id):
+         options_dropdown = Select(driver.find_element("xpath",id))
+         return len(options_dropdown.options)

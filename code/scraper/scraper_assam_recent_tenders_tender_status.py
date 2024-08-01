@@ -60,33 +60,9 @@ def captcha_input(xpath_image,xpath_input_text):
         if len(invalid_string) == 0:
             break
 
-#Select tender status
-
-SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="tenderStatus"]',"1") #3
+options_count = SeleniumScrappingUtils.get_dropdown_count(driver,'//*[@id="tenderStatus"]')
 
 
-#Select date for tender scraping 
-#from date
-from_date_element = SeleniumScrappingUtils.get_page_element(driver, '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[2]/a')
-from_date_element.click()
-#Select month
-SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[2]/div[1]/table/tbody/tr/td[2]/select',value="0")
-#Select year
-SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[2]/div[1]/table/tbody/tr/td[3]/select',value = "2023")
-#Select Date
-SeleniumScrappingUtils.get_page_element(driver,'//*[@id="Body"]/div[2]/div[2]/table/tbody/tr[1]/td[7]').click()
-
-#to_date
-to_date_element = SeleniumScrappingUtils.get_page_element(driver, '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[4]/a')
-to_date_element.click()
-#Select month
-SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[3]/div[1]/table/tbody/tr/td[2]/select',value="4")
-#Select year
-SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[3]/div[1]/table/tbody/tr/td[3]/select',value = "2023")
-#Select Date
-SeleniumScrappingUtils.get_page_element(driver,'//*[@id="Body"]/div[3]/div[2]/table/tbody/tr[5]/td[3]').click()
-#break captcha
-captcha_input('//*[@id="captchaImage"]','//*[@id="captchaText"]')
 
 def scrape_view_more_details(driver,tender_id):
     view_more_details_element = SeleniumScrappingUtils.get_page_element(driver,'//*[@id="DirectLink"]')
@@ -170,7 +146,10 @@ def get_table_links(driver,table_xpath):
     links = [element.get_attribute("href") for element in elements_list]
     rows = table.find_elements(By.CSS_SELECTOR,"tr")
     tender_ids = [row.find_element("xpath","td[2]").text for row in rows[1:-2]]
-    next_page_link = table.find_elements("xpath",'//*[@id="loadNext"]')[0].get_attribute("href")
+    try:
+        next_page_link = table.find_elements("xpath",'//*[@id="loadNext"]')[0].get_attribute("href")
+    except:
+        next_page_link = []
     return table,links,next_page_link,tender_ids
 
 def scrapeTender(driver,tender_ids,links,dict_tables_type,flag=None,):
@@ -193,12 +172,47 @@ def scrapeTender(driver,tender_ids,links,dict_tables_type,flag=None,):
         SeleniumScrappingUtils.remove_csvs(directory)
     # SeleniumScrappingUtils.get_page_element(driver,'//*[@id="PageLink_20"]').click()
 
-if __name__ == "__main__":
-    tender_ids_list = []
-    table,links,next_page_link,tender_ids = get_table_links(driver,'//*[@id="tabList"]')
-    scrapeTender(driver,tender_ids,links,dict_tables_type,"first")
-    while len(next_page_link):
-        print("next")
-        driver.get(next_page_link)
+if __name__ == "__main__":  
+    for optionValue in range(1, options_count):
+        
+        #Select tender status
+        SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="tenderStatus"]', str(optionValue)) #3
+        print(optionValue)
+
+        #Select date for tender scraping 
+        #from date
+        from_date_element = SeleniumScrappingUtils.get_page_element(driver, '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[2]/a')
+        from_date_element.click()
+        #Select month
+        SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[2]/div[1]/table/tbody/tr/td[2]/select',value="0")
+        #Select year
+        SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[2]/div[1]/table/tbody/tr/td[3]/select',value = "2023")
+        #Select Date
+        SeleniumScrappingUtils.get_page_element(driver,'//*[@id="Body"]/div[2]/div[2]/table/tbody/tr[1]/td[7]').click()
+
+        #to_date
+        to_date_element = SeleniumScrappingUtils.get_page_element(driver, '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[4]/a')
+        to_date_element.click()
+        #Select month
+        SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[3]/div[1]/table/tbody/tr/td[2]/select',value="4")
+        #Select year
+        SeleniumScrappingUtils.select_drop_down(driver,'//*[@id="Body"]/div[3]/div[1]/table/tbody/tr/td[3]/select',value = "2023")
+        #Select Date
+        SeleniumScrappingUtils.get_page_element(driver,'//*[@id="Body"]/div[3]/div[2]/table/tbody/tr[5]/td[3]').click()
+        #break captcha
+        captcha_input('//*[@id="captchaImage"]','//*[@id="captchaText"]')
+
+        time.sleep(2)
+
+        tender_ids_list = []
         table,links,next_page_link,tender_ids = get_table_links(driver,'//*[@id="tabList"]')
-        scrapeTender(driver,tender_ids,links,dict_tables_type)
+        # scrapeTender(driver,tender_ids,links,dict_tables_type,"first")
+
+        while len(next_page_link):
+            print("next")
+            driver.get(next_page_link)
+            table,links,next_page_link,tender_ids = get_table_links(driver,'//*[@id="tabList"]')
+            # scrapeTender(driver,tender_ids,links,dict_tables_type)
+            time.sleep(2)
+        
+        # driver.get(url)
