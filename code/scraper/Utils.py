@@ -25,19 +25,19 @@ class SeleniumScrappingUtils(object):
         tender_id = dataframe["tender.id"][dataframe['tender.stage'] == "AOC"]
         return tender_id
     
-    def get_multiple_page_elements(browser,xpath = None):
+    def get_multiple_page_elements(driver,xpath = None):
         '''
         returns list of page element identifies with the given path
         '''
-        page_element = WebDriverWait(browser.driver, SLEEP_TIME).until(EC.presence_of_all_elements_located((By.XPATH,xpath)))
+        page_element = WebDriverWait(driver, SLEEP_TIME).until(EC.presence_of_all_elements_located((By.XPATH,xpath)))
         return page_element
     
-    def get_page_element(browser, xpath=None):
+    def get_page_element(driver, xpath=None):
         ''' Get page element by xpath
         '''
-        page_element = WebDriverWait(browser.driver, SLEEP_TIME).until(EC.presence_of_element_located((By.XPATH,xpath)))
+        page_element = WebDriverWait(driver, SLEEP_TIME).until(EC.presence_of_element_located((By.XPATH,xpath)))
         return page_element
-    def input_text_box(browser, select_element, text=None):
+    def input_text_box(driver, select_element, text=None):
         '''
         Input text in input box
         '''
@@ -101,6 +101,6 @@ class SeleniumScrappingUtils(object):
             print("File found")
             return True
     
-    def select_drop_down(browser,id,value):
-         selected_element = Select(browser.driver.find_element("xpath",id))
+    def select_drop_down(driver,id,value):
+         selected_element = Select(driver.find_element("xpath",id))
          selected_element.select_by_value(value)
