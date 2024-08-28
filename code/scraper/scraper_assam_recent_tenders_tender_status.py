@@ -13,7 +13,7 @@ from selenium import webdriver
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 url = 'https://assamtenders.gov.in/nicgep/app?page=WebTenderStatusLists&service=page'
 # browser = WebDriver("/home/bhavabhuthi/Downloads/chrome-linux64/chrome-linux64/chrome")
-chromedriver_path = '/usr/bin/chromedriver'
+chromedriver_path = ""
 
 chrome_options = Options()
 # chrome_options.add_argument("--headless")  # Optional: run Chrome in headless mode
