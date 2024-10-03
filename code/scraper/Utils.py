@@ -1,6 +1,7 @@
 import pandas as pd
 from logging.config import fileConfig
 import os
+import re
 from requests.adapters import HTTPAdapter
 import csv
 import glob
@@ -14,12 +15,22 @@ import shutil
 from urllib3.util import Retry
 import time
 
-MAX_RELOADS = 3
-SLEEP_TIME = 2
+MAX_RELOADS = 5
+SLEEP_TIME = 30
 class SeleniumScrappingUtils(object):
     def __init__(self):
         pass
-        
+
+
+    def sanitize_filename(filename):
+        # Remove invalid characters and replace spaces with underscores
+        sanitized = re.sub(r'[<>:"/\\|?*]', '', filename)
+        sanitized = sanitized.replace(' ', '_')
+        # Truncate filename if it's too long (Windows has a 255-character limit)
+        return sanitized[:255]
+
+
+
     def get_tender_id(path):
         dataframe = pd.read_csv(path)
         tender_id = dataframe["tender.id"][dataframe['tender.stage'] == "AOC"]
@@ -52,23 +63,31 @@ class SeleniumScrappingUtils(object):
         ''' Extracts name from webelement'''
         name_of_element = [element[i].text for i in range(len(element))]
         return name_of_element
-    def extract_vertical_table(table_section,name_of_file,skip_header_number = None):
+
+    def extract_vertical_table(table_section, name_of_file, skip_header_number=None):
         '''
         Extracts vertical tables
         '''
-        with open(str(name_of_file)+".csv", 'w', newline='') as csvfile:
+        # Sanitize the filename
+        safe_filename = SeleniumScrappingUtils.sanitize_filename(str(name_of_file))
+
+        with open(safe_filename + ".csv", 'w', newline='', encoding='utf-8') as csvfile:
             wr = csv.writer(csvfile)
-            for row in table_section.find_elements(By.CSS_SELECTOR,'tr')[skip_header_number:]:
-                wr.writerow([d.text for d in row.find_elements(By.CSS_SELECTOR,'td')])
-    def extract_horizontal_table(table_section,name_of_file,skip_header_number = None):
+            for row in table_section.find_elements(By.CSS_SELECTOR, 'tr')[skip_header_number:]:
+                wr.writerow([d.text for d in row.find_elements(By.CSS_SELECTOR, 'td')])
+    def extract_horizontal_table(table_section, name_of_file, skip_header_number=None):
         '''
         Extracts horizontal tables
         '''
-        with open(str(name_of_file) + ".csv", 'w', newline='') as csvfile:
+        # Sanitize the filename
+        safe_filename = SeleniumScrappingUtils.sanitize_filename(str(name_of_file))
+
+        with open(safe_filename + ".csv", 'w', newline='', encoding='utf-8') as csvfile:
             wr = csv.writer(csvfile)
-            for row in table_section.find_elements(By.CSS_SELECTOR,"tbody"):
-                wr.writerow([d.text for d in row.find_elements(By.CSS_SELECTOR,'td:nth-of-type(2n+1)')[skip_header_number:]])
-                wr.writerow([d.text for d in row.find_elements(By.CSS_SELECTOR,'td:nth-of-type(2n+2)')])
+            for row in table_section.find_elements(By.CSS_SELECTOR, "tbody"):
+                wr.writerow(
+                    [d.text for d in row.find_elements(By.CSS_SELECTOR, 'td:nth-of-type(2n+1)')[skip_header_number:]])
+                wr.writerow([d.text for d in row.find_elements(By.CSS_SELECTOR, 'td:nth-of-type(2n+2)')])
                 
     def concatinate_csvs(path_to_save,name_of_file):
         '''

@@ -4,6 +4,7 @@ from datetime import date
 
 today = date.today()
 
+
 # Get data file names
 def get_transformed_data(path):
     filenames = glob.glob(path + "/*.csv")
@@ -15,20 +16,21 @@ def get_transformed_data(path):
     # Concatenate all data into one DataFrame
     big_frame = pd.concat(dfs, ignore_index=True)
 
-    data_for_upload = big_frame[['Tender ID :','Tender Title :','Work Description','Organisation Chain','Title',
-                                'Tender Value in ₹','Tender Ref No :','Published Date','Bid Validity(Days)','Is Multi Currency Allowed For BOQ',
-                                'Bid Opening Date','Tender Category','Tender Type','Form of contract',
-                                'Product Category','Allow Two Stage Bidding','Allow Preferential Bidder',
-                                'Payment Mode','Status','Bid Number','Contract Date :','Awarded Value']]
+    data_for_upload = big_frame[['Tender ID :', 'Tender Title :', 'Work Description', 'Organisation Chain', 'Title',
+                                 'Tender Value in ₹', 'Tender Ref No :', 'Published Date', 'Bid Validity(Days)',
+                                 'Is Multi Currency Allowed For BOQ',
+                                 'Bid Opening Date', 'Tender Category', 'Tender Type', 'Form of contract',
+                                 'Product Category', 'Allow Two Stage Bidding', 'Allow Preferential Bidder',
+                                 'Payment Mode', 'Status', 'Bid Number', 'Contract Date :', 'Awarded Value']]
 
     data_for_upload['Status'] = data_for_upload['Status'].drop_duplicates(keep='first')
-    data_for_upload['department'] = data_for_upload['Organisation Chain'].str.split("|",expand=True)[0]
-    data_for_upload = data_for_upload.drop(["Bid Number"],axis=1)
-    data_for_upload.dropna(axis = 0, how = 'all', inplace = True)
-    data_temp = data_for_upload[['Tender ID :','Bid Number']]
+    data_for_upload['department'] = data_for_upload['Organisation Chain'].str.split("|", expand=True)[0]
+    #data_for_upload = data_for_upload.drop(["Bid Number"], axis=1)
+    data_for_upload.dropna(axis=0, how='all', inplace=True)
+    data_temp = data_for_upload[['Tender ID :', 'Bid Number']]
     data_temp['Tender ID :'] = data_temp['Tender ID :'].fillna(method='ffill')
     no = pd.DataFrame()
-    no = data_temp.groupby("Tender ID :").size().reset_index(drop = True)
+    no = data_temp.groupby("Tender ID :").size().reset_index(drop=True)
     data_for_upload['no of bids received'] = no
     data_to_upload_final = pd.DataFrame()
     data_to_upload_final['ocid'] = "ocds-kjhdrl" + "-" + data_for_upload['Tender ID :']
@@ -49,7 +51,8 @@ def get_transformed_data(path):
     data_to_upload_final['tender/contractType'] = data_for_upload['Form of contract']
     data_to_upload_final['tenderclassification/description'] = data_for_upload['Product Category']
     data_to_upload_final['tender/submissionMethodDetails'] = ""
-    data_to_upload_final['tender/participationFee/0/multiCurrencyAllowed'] = data_for_upload['Is Multi Currency Allowed For BOQ']
+    data_to_upload_final['tender/participationFee/0/multiCurrencyAllowed'] = data_for_upload[
+        'Is Multi Currency Allowed For BOQ']
     data_to_upload_final['tender/allowTwoStageTender'] = data_for_upload["Allow Two Stage Bidding"]
     data_to_upload_final['tender/value/amount'] = data_for_upload['Tender Value in ₹']
     data_to_upload_final['tender/datePublished'] = data_for_upload['Published Date']
@@ -69,9 +72,11 @@ def get_transformed_data(path):
     data_to_upload_final['tender/milestones/dueDate'] = ""
     data_to_upload_final['tender/documents/id'] = ""
     data_to_upload_final['buyer/name'] = data_for_upload['department']
-    data_to_upload_final['Fiscal Year'] = pd.to_datetime(data_to_upload_final['tender/bidOpening/date']).dt.to_period('Q-APR').dt.qyear.apply(lambda x: str(x-1) + "-" + str(x))
-    
-    data_to_upload_final.to_csv("data_to_upload_latest.csv",index=False)
+    data_to_upload_final['Fiscal Year'] = pd.to_datetime(data_to_upload_final['tender/bidOpening/date']).dt.to_period(
+        'Q-APR').dt.qyear.apply(lambda x: str(x - 1) + "-" + str(x))
+
+    data_to_upload_final.to_csv("data_to_upload_latest.csv", index=False)
+
 
 if __name__ == "__main__":
     get_transformed_data("path/to/folder")
