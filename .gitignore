@@ -5,6 +5,7 @@ venv/*
 oci/*
 # VS code settings
 .vscode/
+data/RawData/unmapped_jan_sep2024/unmapped_jan-sep2024/*
 
 # Cache Python
 code/scraper/__pycache__
