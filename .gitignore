@@ -1,6 +1,8 @@
 # Virtual Environment Files
-ocds_env/
-tender-scraper/
+ocds_env/*
+tender-scraper/*
+venv/*
+oci/*
 # VS code settings
 .vscode/
 

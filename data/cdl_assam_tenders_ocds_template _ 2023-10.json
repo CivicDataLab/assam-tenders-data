@@ -1,0 +1,276 @@
+{
+  "ocid": "ocid prefix + unique id for the contracting process",
+  "id": "id for this release",
+  "date": "date when this was first recorded or published",
+  "tag": [
+    "array",
+    "of",
+    "release",
+    "tags"
+  ],
+  "initiationType": "tender",
+  "parties": [
+    {
+      "id": "assign id here unique within the release or turn name into id",
+      "name": "Basic Details > Organisation Chain",
+      "roles": [
+        "buyer"
+      ]
+    },
+    {
+      "id": "assign id here unique within the release or turn name into id",
+      "name": "Tender Inviting Authority > Name",
+      "address": {
+        "streetAddress": "Tender Inviting Authority > Address"
+      },
+      "roles": [
+        "procuringEntity"
+      ]
+    },
+    {
+      "id": "assign id here unique within the release or turn name into id",
+      "name": "Awarded Bids List > Bidder Name",
+      "roles": [
+        "tenderer",
+        "supplier"
+      ]
+    },
+    {
+      "id": "assign id here unique within the release or turn name into id",
+      "name": "Bids List > Bidder Name",
+      "roles": [
+        "tenderer"
+      ]
+    }
+  ],
+  "buyer": {
+    "name": "Basic Details > Organisation Chain",
+    "id": "id assigned to buyer in the parties array"
+  },
+  "tender": {
+    "id": "Basic Details > Tender ID",
+    "identifiers": [
+      {
+        "id": "Basic Details > Tender Reference Number",
+        "scheme": "external"
+      }
+    ],
+    "title": "Work Item Details > Title",
+    "description": "Work Item Details > Work Description",
+    "datePublished": "Critical Dates > Published Date / Critical Dates > Publish Date",
+    "contractType": "Work Item Details > Contract Type",
+    "submissionTerms": {
+      "allowPreferentialBidder": "Work Item Details > Allow Preferential Bidder",
+      "allowMultiCurrencyFee": "Basic Details > Is Multi Currency Allowed For Fee",
+      "allowMultiCurrencyBQQ": "Basic Details > Is Multi Currency Allowed For BOQ",
+      "bidValidityPeriod": {
+        "durationInDays": "Work/Item(s) > Bid Validiy(Days)"
+      }
+    },
+    "procuringEntity": {
+      "name": "Tender Inviting Authority > Name",
+      "id": "id assigned to procuring entity in the parties array"
+    },
+    "items": [
+      {
+        "id": "assign id here",
+        "classification": {
+          "description": "Work Item Details > Product Category"
+        },
+        "additionalClassifications": [
+          {
+            "description": "Work Item Details > Subcategory"
+          }
+        ],
+        "deliveryAddresses": [
+          {
+            "postalCode": "Work Item Details > Pincode",
+            "streetAddress": "Work Item Details > Location"
+          }
+        ]
+      }
+    ],
+    "value": {
+      "amount": "Work Item Details > Tender Value in ¹",
+      "currency": "INR"
+    },
+    "procurementMethod": "Basic Details > Tender Type",
+    "mainProcurementCategory": "Basic Details > Tender Category or Basic Details > Form of contract",
+    "tenderPeriod": {
+      "startDate": "Critical Dates > Published Date / Critical Dates > Publish Date",
+      "endDate": "Critical Dates > Bid Submission End Date",
+      "durationInDays": "Calculated field,  Critical Dates > Bid Submission End Date - Critical Dates > Published Date"
+    },
+    "enquiryPeriod": {
+      "startDate": "Critical Dates > Clarification Start Date",
+      "endDate": "Critical Dates > Clarification End Date",
+      "durationInDays": "Calculated field, Critical Dates > Clarification End Date - Critical Dates > Clarification Start Date"
+    },
+    "contractPeriod": {
+      "durationInDays": "Work Item Details > Period Of Work(Days)"
+    },
+    "communication": {
+      "documentAvailabilityPeriod": {
+        "startDate": "Critical Dates > Document Download / Sale Start Date",
+        "endDate": "Critical Dates > Document Download / Sale End Date"
+      }
+    },
+    "bidOpening": {
+      "date": "Critical Dates > Bid Opening Date",
+      "address": {
+        "streetAddress": "Work/Item(s) > Bid Opening Place"
+      }
+    },
+    "participationFees": [
+      {
+        "id": "assign id here",
+        "value": {
+          "amount": "Tender Fee Details > Tender Fee in ¹",
+          "currency": "INR"
+        },
+        "description": "Tender Fee Details > Fee Payable To"
+      }
+    ],
+    "numberOfTenderers": "Calculated field from Bids List > Bid Number",
+    "tenderers": [
+      {
+        "name": "Bids List > Bidder Name",
+        "id": "id assigned to the tenderer in the parties array"
+      }
+    ],
+    "documents": [
+      {
+        "id": "assign id here that should be unique within the array",
+        "title": "Tenders Documents > Nit Document > Document Name",
+        "description": "Tenders Documents > Nit Document > Description"
+      },
+      {
+        "id": "assign id here that should be unique within the array",
+        "documentType": "Tenders Documents > Work Item Documents > Document Type",
+        "title": "Tenders Documents > Work Item Documents > Document Name",
+        "description": "Tenders Documents > Work Item Documents > Description",
+        "format": "derive from Tenders Documents > Work Item Documents > Document Name",
+        "url": "derive from Tenders Documents > Work Item Documents > Document Name"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Published Date, meaning Published Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Published Date"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Document Download / Sale Start Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Document Download / Sale Start Date"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Clarification Start Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Clarification Start Date"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Bid Submission Start Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Bid Submission Start Date"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Bid Opening Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Bid Opening Date"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Financial Bid Opening Date:",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Financial Bid Opening Date:"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Document Download / Sale End Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Document Download / Sale End Date"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Clarification End Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Clarification End Date"
+      },
+      {
+        "id": "assign id here unique within the release",
+        "title": "use variable name from Critical Dates > Bid Submission End Date",
+        "type": "select one from milestoneType codelist based on the nature of a milestone",
+        "dueDate": "Critical Dates > Bid Submission End Date"
+      }
+    ],
+    "amendments": [
+      {
+        "date": "Published Date",
+        "rationale": "Corrigendum Reason",
+        "description": "Corrigendum Description"
+      }
+    ]
+  },
+  "bids": {
+    "details": [
+      {
+        "id": "Bids List > Bid Number",
+        "date": "Bids List > Submitted Date",
+        "status": "Bids List > Status",
+        "value": {
+          "amount": "Financial Evaluation Bid List > Value, join using Bid Number"
+        },
+        "tenderers": [
+          {
+            "id": "is assigned in the parties array",
+            "name": "Bids List > Bidder Name"
+          }
+        ],
+        "rank": "Financial Evaluation Bid List > Rank, join using Bid Number"
+      }
+    ]
+  },
+  "awards": [
+    {
+      "id": "assign id here unique within the release - this could be just 01",
+      "description": "AOC > AOC Description :",
+      "value": {
+        "amount": "Awarded Bids List > Awarded Value or AOC > Contract Value",
+        "currency": "Awarded Bids List > Awarded Currency"
+      },
+      "suppliers": [
+        {
+          "id": "id assigned to this bidder in the parties array",
+          "name": "Awarded Bids List > Bidder Name"
+        }
+      ],
+      "contractPeriod": {
+        "startDate": "AOC > Contract Date",
+        "durationInDays": "AOC Work Completion Period in days"
+      },
+      "documents": [
+        {
+          "id": "assign id here unique within this array",
+          "documentType": "assign document type based on documentType codelist",
+          "title": "AOC > AOC Document",
+          "url": "derive from AOC > AOC Document",
+          "format": "derive from AOC > AOC Document"
+        }
+      ]
+    }
+  ],
+  "statistics": [
+    {
+      "id": "1",
+      "value": "AOC > Contract Value",
+      "currency": "INR",
+      "measure": "contractValue"
+    }
+  ]
+}
