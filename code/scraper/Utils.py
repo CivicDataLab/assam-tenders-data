@@ -17,6 +17,40 @@ import time
 
 MAX_RELOADS = 5
 SLEEP_TIME = 30
+
+
+def select_date_from_picker(driver, picker_type, year, month_index, day):
+
+    #picker_type: "from" or "to"
+    #year: e.g., "2017"
+    #month_index: 0 for January, 11 for December 
+    # day: integer (1–31)
+ 
+    picker_index = "2" if picker_type == "from" else "3"
+    base_xpath = f'//*[@id="Body"]/div[{picker_index}]'
+
+
+    SeleniumScrappingUtils.select_drop_down(
+        driver, f'{base_xpath}/div[1]/table/tbody/tr/td[2]/select', value=month_index
+    )
+    #year
+    SeleniumScrappingUtils.select_drop_down(
+        driver, f'{base_xpath}/div[1]/table/tbody/tr/td[3]/select', value=year
+    ) 
+    #Search the date entered
+    for r in range(1, 7):  #r is rows
+        for c in range(1, 8):  #c is columns
+            try:
+                cell = driver.find_element(By.XPATH, f"{base_xpath}/div[2]/table/tbody/tr[{r}]/td[{c}]")
+                if cell.text.strip() == str(day):
+                    cell.click()
+                    return
+            except:
+                continue
+    raise Exception(f"day{day} not found in calendar")
+
+
+
 class SeleniumScrappingUtils(object):
     def __init__(self):
         pass
