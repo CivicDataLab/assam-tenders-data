@@ -1,13 +1,14 @@
 from selenium.webdriver.support.wait import WebDriverWait
-
+import time
 from WebDriver import WebDriver
 from Utils import SeleniumScrappingUtils
 import time
 import os
 import warnings
-from captcha import captcha
+from captcha import captcha, recaptcha
 
 import pdb
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -16,25 +17,26 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-url = 'https://assamtenders.gov.in/nicgep/app?page=WebTenderStatusLists&service=page'
+url = 'https://etender.up.nic.in/nicgep/app?page=WebTenderStatusLists&service=page'
 # browser = WebDriver("/home/bhavabhuthi/Downloads/chrome-linux64/chrome-linux64/chrome")
 chromedriver_path = ""
 
 chrome_options = Options()
-# chrome_options.add_argument("--headless")  # Optional: run Chrome in headless mode
+chrome_options.add_argument("--headless")  # Optional: run Chrome in headless mode
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.page_load_strategy = 'eager'
+chrome_options.add_argument("--start-maximized")
 
-# Set up the Chrome service
 chrome_service = Service(chromedriver_path)
 
-# Create a new instance of the Chrome driver
+
 driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
-# Open a webpage
+
 driver.get(url)
 
-# driver.get(url)
+
 
 os.chdir("scraped_recent_tenders")
 dict_tables_type = {"Bids List": "Vertical", "Technical Bid Opening Summary": "Horizontal",
@@ -50,12 +52,12 @@ dict_tables_type = {"Bids List": "Vertical", "Technical Bid Opening Summary": "H
 
 def check_captcha_and_reload(driver, xpath_image, xpath_input_text):
     while True:
-        # Check if there is an error indicating CAPTCHA failure
+       
         invalid_string = driver.find_elements(By.CLASS_NAME, "error")
 
 
         if len(invalid_string) == 0:
-            break  # If no error, CAPTCHA is valid, break the loop
+            break  
 
         print("CAPTCHA validation failed. Reloading CAPTCHA...")
 
@@ -63,87 +65,90 @@ def check_captcha_and_reload(driver, xpath_image, xpath_input_text):
         reload_button_xpath = "/html/body/div[1]/table/tbody/tr[2]/td/table/tbody/tr/td[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[19]/td/table/tbody/tr/td[3]/button"
         reload_button = driver.find_element(By.XPATH, reload_button_xpath)
         reload_button.click()
-        time.sleep(2)  # Wait for the CAPTCHA to reload
+        time.sleep(2)  
 
         # Solve the new CAPTCHA
         captcha_text = captcha(driver, xpath_image)
         captcha_input_element = SeleniumScrappingUtils.get_page_element(driver, xpath_input_text)
         SeleniumScrappingUtils.input_text_box(driver, captcha_input_element, captcha_text)
 
-        time.sleep(3)  # Wait for potential error message to reappear
+        time.sleep(3)  # Wait for   error message to reappear
 
 
+def captcha_input(driver, xpath_image, xpath_input_text):
+    def handle_invalid_captcha():
+        print("\nCAPTCHA validation failed. Please re-enter the correct CAPTCHA.")
 
-def captcha_input(xpath_image, xpath_input_text):
-    captcha_text = captcha(driver, xpath_image)
+        # Prompt user for new input
+        captcha_text = input("Enter the correct CAPTCHA text: ")
+
+        # Clear and enter new captcha
+        captcha_input_element = SeleniumScrappingUtils.get_page_element(driver, xpath_input_text)
+        captcha_input_element.clear()
+        SeleniumScrappingUtils.input_text_box(driver, captcha_input_element, captcha_text)
+
+        # Click search button
+        search_button = SeleniumScrappingUtils.get_page_element(driver, '//*[@id="Search"]')
+        search_button.click()
+        time.sleep(3)
+
+        return driver.find_elements(By.XPATH, '//*[@id="If_19"]/table/tbody/tr/td/span/b')
+
+    # Display the CAPTCHA image for user reference
+    captcha_element = driver.find_element(By.XPATH, xpath_image)
+    SeleniumScrappingUtils.save_image_as_png(captcha_element)
+    driver.save_screenshot("screenshot.png")
+    print("\nCAPTCHA saved as 'captcha_image.png'. Please check the image and enter the text.")
+
+
+    captcha_text = input("Enter CAPTCHA text: ")
+
+
     captcha_input_element = SeleniumScrappingUtils.get_page_element(driver, xpath_input_text)
-    time.sleep(3)
     SeleniumScrappingUtils.input_text_box(driver, captcha_input_element, captcha_text)
-    invalid_string = driver.find_elements(By.CLASS_NAME, "error")
 
-    # Click the search button
+
     search_button = SeleniumScrappingUtils.get_page_element(driver, '//*[@id="Search"]')
     search_button.click()
-    #check_captcha_and_reload(driver, xpath_image, xpath_input_text)
+    time.sleep(3)
 
 
+    invalid_string = driver.find_elements(By.XPATH, '//*[@id="If_19"]/table/tbody/tr/td/span/b')
     while len(invalid_string) != 0:
-        pdb.set_trace()
-        captcha_text = captcha(driver, xpath_image)
-        captcha_input_element = SeleniumScrappingUtils.get_page_element(driver, xpath_input_text)
-        SeleniumScrappingUtils.input_text_box(driver, captcha_input_element, captcha_text)
-        time.sleep(3)
-        invalid_string = driver.find_elements(By.CLASS_NAME, "error")
-        print("CAPTCHA validation failed. Reloading CAPTCHA...")
+        invalid_string = handle_invalid_captcha()
 
-        # # Reload CAPTCHA image
-        # reload_button = driver.find_element(By.XPATH,
-        #                                     "/html/body/div[1]/table/tbody/tr[2]/td/table/tbody/tr/td[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[19]/td/table/tbody/tr/td[3]/button")
-        # reload_button.click()
-        # time.sleep(2)  # Give some time for the new CAPTCHA to load
-        #
-        # # Solve the new CAPTCHA
-        # captcha_text = captcha(driver, xpath_image)  # Solve the new CAPTCHA using the same xpath_image
-        # captcha_input_element = SeleniumScrappingUtils.get_page_element(driver, xpath_input_text)
-        # SeleniumScrappingUtils.input_text_box(driver, captcha_input_element, captcha_text)
-        #
-        # time.sleep(3)  # Wait for the error message to be displayed again if CAPTCHA is wrong
-        # invalid_string = driver.find_elements(By.CLASS_NAME, "error")  # Re-check for error
-
-        if len(invalid_string) == 0:
-            break
-
+    return True
 
 # Select tender status
 
+time.sleep(10)
+
 SeleniumScrappingUtils.select_drop_down(driver, '//*[@id="tenderStatus"]', "6")  # 3
 
-# Select date for tender scraping;
-# from date
-from_date_element = SeleniumScrappingUtils.get_page_element(driver,
-                                                            '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[2]/a')
-from_date_element.click()
-# Select month
-SeleniumScrappingUtils.select_drop_down(driver, '//*[@id="Body"]/div[2]/div[1]/table/tbody/tr/td[2]/select', value="3")
-# Select year
-SeleniumScrappingUtils.select_drop_down(driver, '//*[@id="Body"]/div[2]/div[1]/table/tbody/tr/td[3]/select',
-                                        value="2024")
-# Select Date
-SeleniumScrappingUtils.get_page_element(driver, '//*[@id="Body"]/div[2]/div[2]/table/tbody/tr[1]/td[2]').click()
 
-# to_date
-to_date_element = SeleniumScrappingUtils.get_page_element(driver,
-                                                          '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[4]/a')
+
+# Select date for tender scraping
+# Select date for tender scraping
+
+#From 
+from_date_element = SeleniumScrappingUtils.get_page_element(
+    driver,
+    '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[2]/a'
+)
+from_date_element.click()
+SeleniumScrappingUtils.select_date_from_picker(driver, picker_type="from", year="2023", month_index="0", day=1)
+
+#To 
+to_date_element = SeleniumScrappingUtils.get_page_element(
+    driver,
+    '//*[@id="frmSearchFilter"]/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[3]/td[4]/a'
+)
 to_date_element.click()
-# Select month
-SeleniumScrappingUtils.select_drop_down(driver, '//*[@id="Body"]/div[3]/div[1]/table/tbody/tr/td[2]/select', value="3")
-# Select year
-SeleniumScrappingUtils.select_drop_down(driver, '//*[@id="Body"]/div[3]/div[1]/table/tbody/tr/td[3]/select',
-                                        value="2024")
-# Select Date
-SeleniumScrappingUtils.get_page_element(driver, '//*[@id="Body"]/div[3]/div[2]/table/tbody/tr[5]/td[3]').click()
-# break captcha
-captcha_input('//*[@id="captchaImage"]', '//*[@id="captchaText"]')
+SeleniumScrappingUtils.select_date_from_picker(driver, picker_type="to", year="2023", month_index="3", day=30)
+
+
+
+captcha_input(driver, '//*[@id="captchaImage"]', '//*[@id="captchaText"]')
 
 
 def scrape_view_more_details(driver, tender_id):
@@ -196,13 +201,13 @@ def scrape_view_stage_summary(driver, tender_id, dict_tables_type):
     window_after = driver.window_handles[1]
     driver.switch_to.window(window_after)
 
-    # Wait for the table elements to load
+    
     WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "table_list")))
 
-    # Retrieve all relevant section elements
+    
     sections = driver.find_elements(By.CLASS_NAME, "table_list")
 
-    # Add additional elements if they exist
+
     try:
         table_list_element = driver.find_element(By.ID, "table_list")
         sections.append(table_list_element)
@@ -215,7 +220,7 @@ def scrape_view_stage_summary(driver, tender_id, dict_tables_type):
     except NoSuchElementException:
         print("Element with CLASS_NAME 'list_table' not found")
 
-    # Process each section
+
     for index, section in enumerate(sections):
         try:
             # Get the header name from the section
@@ -225,7 +230,7 @@ def scrape_view_stage_summary(driver, tender_id, dict_tables_type):
                 else "Unknown Section"
 
             # Print debug information
-            print(f"Processing section {index}: {header_name}")
+            #print(f"Processing section {index}: {header_name}")
 
             # Process table data based on header name
             if header_name in list_of_dict_tables_type:
