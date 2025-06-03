@@ -1,0 +1,87 @@
+FROM apache/airflow:2.7.3-python3.9
+
+USER root
+
+# Install system dependencies
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  # Build tools
+  build-essential \
+  curl \
+  wget \
+  git \
+  gcc \
+  python3-dev \
+  # Tesseract OCR
+  tesseract-ocr \
+  libtesseract-dev \
+  # EasyOCR
+  libgl1 \
+  
+  # Chrome and ChromeDriver
+  chromium \
+  chromium-driver \
+  # Python dependencies
+  python3-pip \
+  python3-dev \
+  # PostgreSQL
+  libpq-dev \
+  postgresql \
+  postgresql-contrib \
+  # Utilities
+  netcat \
+  unzip \
+  && apt-get autoremove -yqq --purge \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Copy requirements file
+COPY requirements.txt /requirements.txt
+
+# Install Python packages
+RUN pip install --no-cache-dir -r /requirements.txt
+
+# Set working directory
+WORKDIR /opt/airflow
+
+# Create directories and set permissions
+RUN mkdir -p /opt/airflow/logs \
+    /opt/airflow/data/raw \
+    /opt/airflow/data/processed \
+    /opt/airflow/data/final \
+    /opt/airflow/data/archive \
+    /opt/airflow/scripts && \
+    chown -R airflow:root /opt/airflow/logs /opt/airflow/data && \
+    chmod -R 775 /opt/airflow/logs /opt/airflow/data
+
+USER airflow
+
+# Install Python dependencies
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /tmp/requirements.txt && \
+    pip install --no-cache-dir \
+    pandas==1.5.3 \
+    selenium==4.10.0 \
+    webdriver-manager==4.0.0 \
+    psycopg2-binary==2.9.6 \
+    python-dotenv==1.0.0 \
+    pyvirtualdisplay==3.0 \
+    opencv-python-headless==4.8.0.74 \
+    easyocr==1.7.0 \
+    torch==2.0.1 \
+    torchvision==0.15.2 \
+    pytesseract==0.3.10 \
+    paddlepaddle==2.5.1 \
+    paddleocr==2.7.0.3 \
+    numpy==1.24.3 \
+    Pillow==10.0.0 \
+    scipy==1.11.1
+
+# Set the AIRFLOW_HOME environment variable
+ENV AIRFLOW_HOME=/opt/airflow
+ENV PYTHONPATH=${PYTHONPATH}:${AIRFLOW_HOME}

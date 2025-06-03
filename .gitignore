@@ -13,3 +13,13 @@ code/scraper/__pycache__
 # Recent Tender Files
 code/scraper/scraped_recent_tenders
 scraped_recent_tenders/
+
+# Google Cloud Credentials
+*.json
+!package.json
+!package-lock.json
+
+logs/
+screenshots/
+
+__pycache__

@@ -1,0 +1,111 @@
+# Cross-platform Docker Compose for Airflow and Selenium
+# Automatically detects platform and uses appropriate images
+
+services:
+  # PostgreSQL database for Airflow metadata
+  postgres:
+    image: postgres:13
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  # Airflow webserver
+  airflow-webserver:
+    image: apache/airflow:2.7.3-python3.9
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__WEBSERVER__WEB_SERVER_HOST=0.0.0.0
+      - AIRFLOW_CONN_SELENIUM=selenium://selenium-chrome:4444/wd/hub
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - PYTHONPATH=/opt/airflow
+      - _PIP_ADDITIONAL_REQUIREMENTS=selenium==4.10.0 webdriver-manager==4.0.0 pandas==1.5.3 psycopg2-binary==2.9.6 python-dotenv==1.0.0 pyvirtualdisplay==3.0 easyocr==1.7.0 Pillow==9.5.0 scipy==1.10.1 numpy==1.24.3
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/include:/opt/airflow/include
+      - ./data:/opt/airflow/data
+      - ./scripts:/opt/airflow/scripts
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+        airflow db init && 
+        airflow users create -r Admin -u admin -e admin@example.com -f admin -l user -p admin --if-not-exists && 
+        airflow connections add 'selenium' --conn-uri 'selenium://selenium-chrome:4444/wd/hub' --conn-description 'Selenium connection' || true && 
+        echo 'Admin credentials: username=admin, password=admin' && 
+        airflow webserver"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  # Airflow scheduler
+  airflow-scheduler:
+    image: apache/airflow:2.7.3-python3.9
+    depends_on:
+      - airflow-webserver
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__WEBSERVER__WEB_SERVER_HOST=0.0.0.0
+      - AIRFLOW_CONN_SELENIUM=selenium://selenium-chrome:4444/wd/hub
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - PYTHONPATH=/opt/airflow
+      - _PIP_ADDITIONAL_REQUIREMENTS=selenium==4.10.0 webdriver-manager==4.0.0 pandas==1.5.3 psycopg2-binary==2.9.6 python-dotenv==1.0.0 pyvirtualdisplay==3.0 easyocr==1.7.0 Pillow==9.5.0 scipy==1.10.1 numpy==1.24.3
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/include:/opt/airflow/include
+      - ./data:/opt/airflow/data
+      - ./scripts:/opt/airflow/scripts
+    command: scheduler
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  # Selenium Chrome container - platform-specific image is selected by the start script
+  selenium-chrome:
+    image: ${SELENIUM_IMAGE:-selenium/standalone-chrome:latest}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    hostname: selenium-chrome
+    ports:
+      - "4444:4444"
+      - "7900:7900"  # VNC port for debugging
+    shm_size: 2g
+    environment:
+      - SE_NODE_MAX_SESSIONS=4
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+    restart: always
+    volumes:
+      - ./data:/data
+
+volumes:
+  postgres-db-volume:

@@ -1,0 +1,29 @@
+
+# Airflow providers
+# API and database dependencies
+# Configuration
+# Core data processing
+# Database connectivity
+# Note: easyocr and its dependencies are installed directly in the Dockerfile
+# Scraper dependencies
+# Security
+# to avoid memory issues during installation# Airflow dependencies
+# Web scraping
+apache-airflow-providers-http==4.5.1
+apache-airflow-providers-postgres==5.6.1
+apache-airflow==2.7.1
+cryptography==41.0.1
+easyocr==1.7.0
+numpy==1.24.3
+pandas==1.5.3
+# OCR dependencies
+pytesseract==0.3.10
+Pillow==10.0.0
+google-cloud-vision==3.4.4
+psycopg2-binary==2.9.6
+python-dateutil==2.8.2
+python-dotenv==1.0.0
+requests==2.31.0
+scipy==1.11.1
+selenium==4.10.0
+webdriver-manager==4.0.0

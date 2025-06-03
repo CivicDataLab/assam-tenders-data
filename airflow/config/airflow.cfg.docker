@@ -1,0 +1,110 @@
+[core]
+# The folder where your airflow pipelines live
+dags_folder = /opt/airflow/dags
+
+# The folder where airflow should store its log files
+base_log_folder = /opt/airflow/logs
+
+# The executor class that airflow should use
+executor = CeleryExecutor
+
+# The SqlAlchemy connection string to the metadata database
+sql_alchemy_conn = postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+
+# Whether to load examples or not
+load_examples = False
+
+# Whether to enable pickling for xcom
+enable_xcom_pickling = True
+
+# Secret key for the web interface
+secret_key = ${AIRFLOW__CORE__SECRET_KEY:-temporary_key}
+
+# Default timezone
+default_timezone = UTC
+
+# Path to plugins
+plugins_folder = /opt/airflow/plugins
+
+[webserver]
+# The base url of your website
+base_url = http://localhost:8080
+
+# The port on which to run the web server
+web_server_port = 8080
+
+# Number of workers to run the Gunicorn web server
+workers = 4
+
+# Secret key used to run your flask app
+secret_key = ${AIRFLOW__WEBSERVER__SECRET_KEY:-temporary_key}
+
+# Number of workers to run the Gunicorn web server
+worker_class = sync
+
+# Expose Airflow configuration in the UI
+expose_config = True
+
+# Default authentication
+auth_backend = airflow.api.auth.backend.basic_auth
+
+[scheduler]
+# Task instances listen for external kill signal (when you clear tasks
+# from the CLI or the UI)
+listener_queue_size = 100
+
+# Number of workers to run the scheduler
+scheduler_max_threads = 2
+
+# Enable health check
+enable_health_check = True
+
+[celery]
+# Celery broker URL
+broker_url = redis://:${REDIS_PASSWORD:-}@redis:6379/0
+
+# Celery result backend
+result_backend = db+postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+
+# Default celery queue
+default_queue = default
+
+[smtp]
+# If you want airflow to send emails on retries, failure, and you want to use
+# the airflow.utils.email.send_email_smtp function, you have to configure an
+# smtp server here
+smtp_host = smtp
+smtp_starttls = True
+smtp_ssl = False
+smtp_port = 25
+smtp_mail_from = airflow@example.com
+
+[logging]
+# The folder where airflow should store its log files
+base_log_folder = /opt/airflow/logs
+
+# Logging level
+logging_level = INFO
+
+[metrics]
+# Send metrics to StatsD
+statsd_on = False
+statsd_host = localhost
+statsd_port = 8125
+statsd_prefix = airflow
+
+[elasticsearch]
+# Host for Elasticsearch
+elasticsearch_host =
+
+[elasticsearch_configs]
+# Additional Elasticsearch configurations
+
+[kubernetes]
+# Kubernetes configuration
+pod_template_file =
+namespace =
+
+[dask]
+# Dask configuration
+cluster_address =
